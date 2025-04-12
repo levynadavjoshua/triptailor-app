@@ -1,61 +1,26 @@
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to bottom right, #e8f1f2, #d0e4f7);
-  color: #2c3e50;
+import React from 'react';
+import './App.css';
+
+function App() {
+  const handleStart = () => {
+    alert("Redirecting to questionnaire...");
+    // בהמשך נחליף לניווט אמיתי
+  };
+
+  return (
+    <div className="hero">
+      <div className="content">
+        <h1>TripTailor</h1>
+        <p>
+          At TripTailor, we make discovery exciting and personal.<br />
+          By blending technology with local wisdom, our platform<br />
+          delivers tailored recommendations that match your interests,<br />
+          helping you explore the world in a way that feels made just for you.
+        </p>
+        <button onClick={handleStart}>Let’s Get Started</button>
+      </div>
+    </div>
+  );
 }
 
-.hero {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  text-align: center;
-  padding: 2rem;
-  animation: fadeIn 1s ease-in;
-}
-
-.content {
-  max-width: 700px;
-  background-color: white;
-  padding: 3rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-p {
-  font-size: 1.2rem;
-  line-height: 1.6;
-  margin-bottom: 2rem;
-}
-
-button {
-  padding: 0.75rem 2rem;
-  font-size: 1.1rem;
-  border: none;
-  border-radius: 10px;
-  background-color: #3498db;
-  color: white;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-button:hover {
-  background-color: #2980b9;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+export default App;
