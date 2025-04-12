@@ -1,10 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import LandingPage from './LandingPage';
 import Questionnaire from './Questionnaire';
-import './App.css';
-import Summary from './Summary'; 
+import Summary from './Summary';
+import FilteredResults from './FilteredResults';
 
+import './App.css';
 
 function App() {
   return (
@@ -13,7 +15,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/questionnaire" element={<Questionnaire />} />
         <Route path="/summary" element={<Summary />} />
-
+        <Route path="/results" element={<FilteredResults />} />
       </Routes>
     </Router>
   );

@@ -1,7 +1,7 @@
 function analyzeAnswers(answers) {
     const profile = {
       tags: [],
-      preferences: {},
+      preferences: {}
     };
   
     // תכנון הטיול
@@ -43,6 +43,7 @@ function analyzeAnswers(answers) {
     // תקציב יומי
     if (answers.daily_budget) {
       profile.preferences.daily_budget = answers.daily_budget;
+      profile.budget_level = answers.daily_budget.toLowerCase(); // לדוגמה: "low", "mid", "high"
     }
   
     // תחום חשוב לחיסכון
@@ -53,26 +54,36 @@ function analyzeAnswers(answers) {
     // פעילויות רצויות
     if (answers.activities) {
       profile.preferences.activities = answers.activities;
+      answers.activities.forEach(act => {
+        profile.tags.push(act.toLowerCase().replace(/\s/g, '_'));
+      });
     }
   
-    // עד כמה חשוב לצאת מהמסלול
+    // יציאה מהמסלול
     if (answers.off_beaten_path) {
       profile.preferences.off_beaten_path = answers.off_beaten_path;
     }
   
     // דרישות מיוחדות
-    if (answers.requirements?.toLowerCase().includes('vegan')) {
-      profile.tags.push('vegan');
-    }
+    const req = answers.requirements?.toLowerCase() || "";
   
-    if (answers.requirements?.toLowerCase().includes('wheelchair')) {
-      profile.tags.push('accessible');
+    if (req.includes('vegan')) profile.tags.push('vegan');
+    if (req.includes('kosher')) profile.tags.push('kosher');
+    if (req.includes('wheelchair')) profile.tags.push('accessible');
+  
+    // גילאי משתתפים (אם יש ילדים)
+    if (answers.participants_ages?.some(age => age < 13)) {
+      profile.tags.push('kids', 'family');
     }
   
     // יעד מועדף
     if (answers.destination) {
       profile.preferences.destination = answers.destination;
+      profile.destination = answers.destination;
     }
+  
+    // מניעת כפילויות בתגיות
+    profile.tags = [...new Set(profile.tags)];
   
     return profile;
   }

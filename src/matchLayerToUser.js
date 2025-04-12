@@ -1,55 +1,61 @@
 function matchLayerToUser(profile, layer) {
-    const prefs = profile.preferences || {};
-    const tags = profile.tags || [];
+    const {
+      destination,
+      budget_level,
+      tags = [],
+      preferences = {}
+    } = profile;
   
-    // בדיקת סוג שכבה - לדוגמה רק שכבות "accommodation"
-    if (layer.main_category && layer.main_category !== 'accommodation') {
-      return false;
-    }
+    const layerTags = (layer.tags || "")
+      .split(',')
+      .map(tag => tag.trim().toLowerCase());
   
-    // 1. התאמה לפי תקציב
-    if (prefs.daily_budget && layer.budgetLevel) {
-      const levels = ['<$50', '$50–100', '$100–200', '$200+'];
-      const budgetValues = ['low', 'medium', 'high'];
-      const userLevel = levels.indexOf(prefs.daily_budget);
-      const layerLevel = budgetValues.indexOf(layer.budgetLevel);
-      if (layerLevel > userLevel) {
+    // יעד
+    if (destination && layer.destination) {
+      if (layer.destination.toLowerCase() !== destination.toLowerCase()) {
         return false;
       }
     }
   
-    // 2. התאמה לפי נגישות/כשרות (אם סומן בדרישות)
-    if (layer.sub_category === 'accessible' && !tags.includes('accessible')) {
-      return false;
+    // תקציב
+    if (budget_level && layer.budget_level) {
+      if (layer.budget_level.toLowerCase() !== budget_level.toLowerCase()) {
+        return false;
+      }
     }
-    if (layer.sub_category === 'kosher' && !tags.includes('kosher')) {
+  
+    // תגיות (לפחות אחת צריכה להתאים)
+    if (tags.length > 0 && layerTags.length > 0) {
+      const hasTagMatch = tags.some(tag => layerTags.includes(tag));
+      if (!hasTagMatch) return false;
+    }
+  
+    // דרישות מיוחדות – שכבות עם תגית kosher/accessible יופיעו רק אם המשתמש צריך את זה
+    if (layerTags.includes('kosher') && !tags.includes('kosher')) {
       return false;
     }
   
-    // 3. התאמה ל-families (אם המשתמש מטייל עם משפחה)
-    if (layer.sub_category === 'family' && !tags.includes('family')) {
+    if (layerTags.includes('accessible') && !tags.includes('accessible')) {
       return false;
     }
   
-    // 4. התאמה לתתי-קטגוריות של תקציב (4 כוכבים, בוטיק, תקציבי)
-    if (layer.sub_category === 'budget' && prefs.daily_budget && !['<$50', '$50–100'].includes(prefs.daily_budget)) {
-      return false;
+    // התאמה עתידית לפי פעילויות
+    if (preferences.activities && Array.isArray(preferences.activities)) {
+      const activityTags = preferences.activities.map(a => a.toLowerCase().replace(/\s/g, '_'));
+      const hasActivityMatch = activityTags.some(tag => layerTags.includes(tag));
+      if (!hasActivityMatch) {
+        return false;
+      }
     }
   
-    if (layer.sub_category === '4_star' && prefs.daily_budget && prefs.daily_budget === '<$50') {
-      return false;
+    // התאמה לרמת תכנון או ספונטניות (בהמשך ניתן לבדוק מול layer.structuring או layer.flexibility)
+    if (preferences.flexibility && layer.flexibility) {
+      if (layer.flexibility.toLowerCase() !== preferences.flexibility.toLowerCase()) {
+        return false;
+      }
     }
   
-    if (layer.sub_category === '5_star' && prefs.daily_budget && !['$100–200', '$200+'].includes(prefs.daily_budget)) {
-      return false;
-    }
-  
-    if (layer.sub_category === 'boutique' && prefs.daily_budget && prefs.daily_budget === '<$50') {
-      return false;
-    }
-  
-    // 5. (עתידי) אפשר להוסיף כאן התאמה לפי יעד
-    // if (prefs.destination && layer.destination) { ... }
+    // TODO: future compatibility with save_priority, off_beaten_path, etc.
   
     return true;
   }

@@ -60,3 +60,44 @@ button:hover {
     transform: translateY(0);
   }
 }
+
+/* 📱 תמיכה במסכים קטנים */
+@media (max-width: 600px) {
+  .content {
+    padding: 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 0.6rem 1.5rem;
+  }
+}
+
+/* ✨ תוספת לעיצוב סעיפים ב-LandingPage */
+section {
+  margin-top: 3rem;
+  text-align: left;
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+}
+
+ul, ol {
+  padding-left: 1.5rem;
+  line-height: 1.8;
+}
+
+li {
+  margin-bottom: 0.75rem;
+}

@@ -6,32 +6,56 @@ function Summary() {
   const location = useLocation();
   const navigate = useNavigate();
   const answers = location.state?.answers || {};
+  const profile = analyzeAnswers(answers);
 
-  const analysis = analyzeAnswers(answers);
+  if (!profile) {
+    return <p style={styles.error}>Unable to generate profile summary. Please try again.</p>;
+  }
+
+  const handleShowResults = () => {
+    navigate('/results', { state: { profile } });
+  };
 
   return (
     <div style={styles.container}>
       <h2>Thank you for your answers!</h2>
       <p style={styles.sub}>Here’s a summary of what you shared:</p>
 
-      <div style={styles.summaryBox}>
+      <div style={styles.summaryBox} aria-label="Your Answers">
         {Object.entries(answers).map(([key, value]) => (
           <div key={key} style={styles.row}>
-            <strong>{key}:</strong> <span>{value}</span>
+            <strong>{key}:</strong> <span>{Array.isArray(value) ? value.join(', ') : value}</span>
           </div>
         ))}
       </div>
 
-      <h3 style={styles.sub}>Profile Insights:</h3>
-      <ul style={styles.list}>
-        {analysis.tags.map((tag, index) => (
+      <h3 style={styles.sectionHeader}>Profile Tags:</h3>
+      <ul style={styles.list} aria-label="Profile Tags">
+        {profile.tags.map((tag, index) => (
           <li key={index} style={styles.listItem}>✔️ {tag}</li>
         ))}
       </ul>
 
-      <button style={styles.button} onClick={() => navigate('/')}>
-        Back to Home
-      </button>
+      <h3 style={styles.sectionHeader}>Preferences:</h3>
+      <ul style={styles.list} aria-label="User Preferences">
+        {Object.entries(profile.preferences).map(([key, value], index) => (
+          <li key={index} style={styles.listItem}>
+            <strong>{key}:</strong> {Array.isArray(value) ? value.join(', ') : value}
+          </li>
+        ))}
+      </ul>
+
+      <div style={styles.buttons}>
+        <button style={styles.button} onClick={() => navigate('/')}>
+          Back to Home
+        </button>
+        <button
+          style={{ ...styles.button, backgroundColor: '#2ecc71', marginLeft: '1rem' }}
+          onClick={handleShowResults}
+        >
+          Show My Recommendations
+        </button>
+      </div>
     </div>
   );
 }
@@ -55,6 +79,12 @@ const styles = {
     textAlign: 'left',
     marginBottom: '2rem',
   },
+  sectionHeader: {
+    marginTop: '2rem',
+    marginBottom: '1rem',
+    fontSize: '1.2rem',
+    color: '#2c3e50',
+  },
   row: {
     marginBottom: '1rem',
     fontSize: '1.1rem',
@@ -77,6 +107,17 @@ const styles = {
     backgroundColor: '#3498db',
     color: 'white',
     cursor: 'pointer',
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '1rem',
+  },
+  error: {
+    textAlign: 'center',
+    color: 'red',
+    fontSize: '1.2rem',
+    marginTop: '3rem',
   },
 };
 
