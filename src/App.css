@@ -29,9 +29,10 @@ h1 {
 }
 
 p {
-  font-size: 1.2rem;
-  line-height: 1.6;
+  font-size: 1.25rem;
+  line-height: 1.8;
   margin-bottom: 2rem;
+  white-space: pre-line;
 }
 
 button {
