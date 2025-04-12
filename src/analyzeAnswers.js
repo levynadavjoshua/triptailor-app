@@ -40,6 +40,26 @@ function analyzeAnswers(answers) {
         break;
     }
   
+    // תקציב יומי
+    if (answers.daily_budget) {
+      profile.preferences.daily_budget = answers.daily_budget;
+    }
+  
+    // תחום חשוב לחיסכון
+    if (answers.save_priority) {
+      profile.preferences.save_priority = answers.save_priority;
+    }
+  
+    // פעילויות רצויות
+    if (answers.activities) {
+      profile.preferences.activities = answers.activities;
+    }
+  
+    // עד כמה חשוב לצאת מהמסלול
+    if (answers.off_beaten_path) {
+      profile.preferences.off_beaten_path = answers.off_beaten_path;
+    }
+  
     // דרישות מיוחדות
     if (answers.requirements?.toLowerCase().includes('vegan')) {
       profile.tags.push('vegan');
